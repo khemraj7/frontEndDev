@@ -46,4 +46,8 @@ export class SessionService {
 
     }
   }
+
+  updateUser(user) {
+    localStorage.setItem('user', JSON.stringify(user))
+  }
 }

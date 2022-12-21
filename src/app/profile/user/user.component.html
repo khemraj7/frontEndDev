@@ -1,1 +1,28 @@
-<p>user works!</p>
+<div *ngIf="!editUser">
+  <table border="2">
+    <tr>
+      <th>Name</th>
+      <td>
+        {{username.name}}
+      </td>
+    </tr>
+    <tr>
+      <th>Email</th>
+
+      <td>
+        {{username.email}}
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="editUser">
+  <input type="text" [(ngModel)]="updateName" />
+  <input type="text" [(ngModel)]="updateEmail" />
+</div>
+<div>
+  <button *ngIf="!editUser" mat-raised-button color="primary" (click)="edit()">Edit</button>
+  <button *ngIf="editUser" mat-raised-button color="primary" (click)="edit()">Cancel</button>
+
+  <button *ngIf="editUser" mat-raised-button color="primary" (click)="update()">update</button>
+</div>

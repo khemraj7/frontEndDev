@@ -45,6 +45,7 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     console.log(this.form.value);
     const body = this.form.value;
+
     this.api.post("/auth/login", body).subscribe(res => {
       console.log(res);
       this.session.loggedInUser(res.user, res.tokens)
