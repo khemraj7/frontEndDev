@@ -1,4 +1,4 @@
-<header class="header_section">
+<!-- <header class="header_section">
   <div class="container">
     <nav class="navbar navbar-expand-lg custom_nav-container">
       <a class="navbar-brand" href="index.html">
@@ -45,5 +45,35 @@
         </ul>
       </div>
     </nav>
+  </div>
+</header> -->
+
+<header id="header" class="fixed-top d-flex align-items-center header-transparent">
+  <div class="container-fluid">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-xl-11 d-flex align-items-center justify-content-between">
+        <h1 class="logo"><a href="index.html">BizPage</a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+
+        <nav id="navbar" class="navbar">
+          <div *ngIf="!loggredInUser">
+            <ul>
+              <li><a class="nav-link scrollto active" [routerLink]="'/'">Home</a></li>
+              <li><a class="nav-link scrollto" [routerLink]="'/login/login'">Login</a></li>
+              <li><a class="nav-link scrollto" [routerLink]="'/login/signup'">Register</a></li>
+            </ul>
+          </div>
+          <div *ngIf="loggredInUser">
+            <ul>
+              <li><a class="nav-link scrollto active" (click)="logout()">logout</a></li>
+            </ul>
+          </div>
+
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav>
+        <!-- .navbar -->
+      </div>
+    </div>
   </div>
 </header>

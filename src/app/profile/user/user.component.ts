@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from 'src/app/services/api.service';
 import { SessionService } from 'src/app/services/session.service';
 
 
@@ -12,7 +13,7 @@ export class UserComponent implements OnInit {
   updateName: any;
   updateEmail: any;
   editUser: boolean = false;
-  constructor(private _session: SessionService) {
+  constructor(private _session: SessionService, private api: ApiService) {
   }
 
   ngOnInit(): void {
@@ -29,11 +30,30 @@ export class UserComponent implements OnInit {
   }
   update() {
     this.username.name = this.updateName
-    this.username.email = this.updateEmail
+    // this.username.email = this.updateEmail
     console.log(this.username)
-    this._session.updateUser(this.username)
-    this.editUser = !this.editUser
+    const body = {
+      name: this.updateName
+    }
+    this.api.patch(`/users/updateUser/${this.username.id}`, body).subscribe((res) => {
+      console.log(res);
+      this._session.updateUser(res)
+      this.editUser = !this.editUser
 
+    })
+
+  }
+
+
+  getUserById() {
+    const query = {};
+    const user = this._session.getUser()
+    console.log(user);
+
+    this.api.get(`/users/getUsers/${user.id}`, query).subscribe((res) => {
+      console.log(res);
+
+    })
   }
 
 
