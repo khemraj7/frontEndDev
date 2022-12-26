@@ -52,7 +52,6 @@ export class UserComponent implements OnInit {
 
     this.api.get(`/users/getUsers/${user.id}`, query).subscribe((res) => {
       console.log(res);
-
     })
   }
 
