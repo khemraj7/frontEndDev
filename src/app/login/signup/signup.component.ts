@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiService } from 'src/app/services/api.service';
+import { SessionService } from 'src/app/services/session.service';
 
 @Component({
   selector: 'app-signup',
@@ -8,68 +11,63 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 })
 export class SignupComponent implements OnInit {
 
-  accountDetailsForm: FormGroup;
-  matching_passwords_group: FormGroup;
-  
-  account_validation_messages = {
-    'username': [
-      { type: 'required', message: 'Username is required' },
-      { type: 'minlength', message: 'Username must be at least 5 characters long' },
-      { type: 'maxlength', message: 'Username cannot be more than 25 characters long' },
-      { type: 'pattern', message: 'Your username must contain only numbers and letters' },
-      { type: 'validUsername', message: 'Your username has already been taken' }
-    ],
-    'email': [
-      { type: 'required', message: 'Email is required' },
-      { type: 'pattern', message: 'Enter a valid mail' }
-    ],
-    'confirm_password': [
-      { type: 'required', message: 'Confirm password is required' },
-      { type: 'areEqual', message: 'Pasword mismatch' }
-    ],
-    'password': [
-      { type: 'required', message: 'Pasword is required' },
-      { type: 'minlength', message: 'Password must be at least 5 characters long' },
-      { type: 'pattern', message: 'Your password must containt at least one uppercase, one lowercase, and one number' }
-    ],
-    'terms': [
-      { type: 'pattern', message: 'You must accept terms and conditions' }
-    ]
-  };
+  registerForm: FormGroup;
+  submitted = false;
 
-  constructor(private fb: FormBuilder) { }
+
+
+
+
+  constructor(private fb: FormBuilder,
+    private api: ApiService,
+    private router: Router, private session: SessionService) { }
 
   ngOnInit(): void {
+    if (this.session.getUser()) {
+      this.router.navigate(['/profile'])
+    }
+    this.registerForm = this.fb.group(
+      {
+        name: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', Validators.required]
 
-    this.matching_passwords_group = new FormGroup({
-      password: new FormControl('', Validators.compose([
-        Validators.minLength(5),
-        Validators.required,
-        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]+$')
-      ])),
-      confirm_password: new FormControl('', Validators.required)
-    }),
+      },
 
-    this.accountDetailsForm = this.fb.group({
-      username: new FormControl('', Validators.compose([
-        Validators.maxLength(25),
-        Validators.minLength(5),
-        Validators.pattern('^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$'),
-        Validators.required
-      ])),
+    );
 
-      email: new FormControl('', Validators.compose([
-        Validators.required,
-        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-      ])),
-      matching_passwords: this.matching_passwords_group,
-      terms: new FormControl(false, Validators.pattern('true'))
+
+
+  }
+
+
+  get f() {
+    return this.registerForm.controls;
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    const body = this.registerForm.value
+
+    console.log(body, this.registerForm.value)
+
+    this.api.post("/auth/register", body).subscribe(res => {
+      console.log(res);
+      this.session.loggedInUser(res.user, res.tokens)
+      this.router.navigate(['/profile'])
+
+
     })
 
 
+    // alert(
+    //   'SUCCESS!! :-)\n\n' + JSON.stringify(this.registerForm.value, null, 4)
+    // );
   }
 
-  onSubmitAccountDetails(value) {
-    console.log(value);
+  onReset() {
+    this.submitted = false;
+    this.registerForm.reset();
   }
 }
+
