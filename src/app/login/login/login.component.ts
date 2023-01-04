@@ -3,7 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { SessionService } from 'src/app/services/session.service';
-
+import {
+  SocialAuthService,
+  GoogleLoginProvider,
+  SocialUser,
+  FacebookLoginProvider,
+} from 'angularx-social-login';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -13,11 +18,16 @@ export class LoginComponent implements OnInit {
 
   form: FormGroup;
   private formSubmitAttempt: boolean;
+  userData: SocialUser;
+  booleanData: boolean =false;
+  userSocialData: SocialUser;
+  facebookBooleanData: boolean;
 
   constructor(
     private fb: FormBuilder, private api: ApiService,
     private session: SessionService,
-    private router: Router
+    private router: Router,
+    private socialAuthService: SocialAuthService
     // private authService: AuthService
   ) { }
 
@@ -33,6 +43,12 @@ export class LoginComponent implements OnInit {
       email: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+    this.socialAuthService.authState.subscribe((user)=>{
+      console.log(user)
+      this.userData = user
+    })
+
   }
 
   isFieldInvalid(field: string) {
@@ -56,5 +72,37 @@ export class LoginComponent implements OnInit {
     //   this.login(this.form.value);
     // }
     this.formSubmitAttempt = true;
+  }
+
+  signWithGoogle(){
+    try {
+      this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(result=>{
+        console.log(result)
+        this.booleanData = true
+        this.userSocialData = result
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  signOut(){
+    this.socialAuthService.signOut()
+    this.booleanData = false
+
+  }
+
+  loginWithFacebook(){
+    this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID).then(result=>{
+      console.log(result)
+      this.facebookBooleanData = true
+      this.userSocialData = result
+    })
+  }
+
+  fbsignOut(){
+    this.socialAuthService.signOut()
+    this.facebookBooleanData = false
+
   }
 }

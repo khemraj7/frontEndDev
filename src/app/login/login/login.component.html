@@ -17,6 +17,26 @@
         </mat-form-field>
         <button mat-raised-button color="primary" type="submit">Login</button>
       </form>
+      <button class="mt-2"  type="button"  mat-stroked-button (click)="signWithGoogle()">google Login</button>
+
+      <button  mat-stroked-button  type="button" (click)="loginWithFacebook()" class="btn btn-primary btn-block mt-2">Signin with Facebook</button>
+
     </mat-card-content>
   </mat-card>
+
+  <mat-card *ngIf="booleanData" class="p-3 mt-2">
+<div>social login</div>
+<div>{{userSocialData.name}}</div>
+<div>
+  <img [src]="userSocialData.photoUrl" alt="">
+  <button mat-stroked-button (click)="signOut()">signOut</button>
+</div>
+  </mat-card>
+  <mat-card *ngIf="facebookBooleanData" class="p-3 mt-2">
+    <div>social login</div>
+    <div>{{userSocialData.name}}</div>
+    <div>
+      <button mat-stroked-button (click)="fbsignOut()">signOut</button>
+    </div>
+      </mat-card>
 </div>
